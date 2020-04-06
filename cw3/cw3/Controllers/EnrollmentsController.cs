@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using cw3.DAL;
+using cw3.DTOs.Requests;
+using cw3.DTOs.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,12 +21,24 @@ namespace cw3.Controllers
             _service = service;
         }
         [HttpPost]
-        public IActionResult EnrollStudent (EnrollStudentRequest request)
+        public IActionResult EnrollStudent(EnrollStudentRequest request)
         {
             _service.EnrollStudent(request);
             var response = new EnrollStudentResponse();
-            response.LastName = st.LastName;
+
+            return CreatedAtAction("EnrollStudent", response);
             //i tak dalej
+
         }
+        [HttpPost]
+        public IActionResult PromoteStudents(PromoteStudentRequest request)
+        {
+            _service.PromoteStudents(request);
+            var response = new PromoteStudentResponse();
+
+            return Ok(response);
+
+        }
+
     }
 }

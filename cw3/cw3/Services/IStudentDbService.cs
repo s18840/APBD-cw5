@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace cw3.DAL
 {
-    interface IStudentDbService
+    public interface IStudentDbService
     {
         void EnrollStudent(EnrollStudentRequest request);
         void PromoteStudents(int semester, string studies);
+        void PromoteStudents(PromoteStudentRequest request);
     }
 }
