@@ -6,8 +6,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using Wyklad5.DTOs.Requests;
-using Wyklad5.Models;
 
 namespace Wyklad5.Services
 {
@@ -30,12 +28,13 @@ namespace Wyklad5.Services
 
             var st = new Student();
             st.FirstName = request.FirstName;
-            //...
-            //...
-            //Micro ORM object-relational mapping
-            //problemami - impedance mismatch
+            st.LastName = request.LastName;
+            st.IndexNumer = request.IndexNumber;
+            st.BirthDate = request.Birthdate;
+            st.StudiesName = request.Studies;
+            st.Semester = request.Semester;
 
-            using (var con = new SqlConnection(""))
+            using (var con = new SqlConnection("Data Source=db-mssql;Initial Catalog=s18840;Integrated Security=True"))
             using (var com = new SqlCommand())
             {
                 com.Connection = con;
@@ -46,21 +45,29 @@ namespace Wyklad5.Services
                 try
                 {
                     //1. Czy studia istnieja?
-                    com.CommandText = "select IdStudies from studies where name=@name";
-                    com.Parameters.AddWithValue("name", request.Studies);
+                    com.CommandText = "select IdStudies from studies where name=@studiesName";
+                    com.Parameters.AddWithValue("studiesName", request.Studies);
 
                     var dr = com.ExecuteReader();
                     if (!dr.Read())
                     {
                         tran.Rollback();
-                        //return BadRequest("Studia nie istnieja");
-                        //...
+                        
                     }
                     int idstudies = (int)dr["IdStudies"];
 
                     //x. Dodanie studenta
-                    com.CommandText = "INSERT INTO Student(IndexNumber, FirstName) VALUES(@Index, @Fname)";
-                    com.Parameters.AddWithValue("index", request.IndexNumber);
+                    com.CommandText = "Select IdEnrollment FROM Enrollments where semester=1 AND idStudy=@idstudy";
+                    com.Parameters.AddWithValue("idStudy", idstudies);
+                    dr = com.ExecuteReader();
+                    if(!dr.Read())
+                    {
+                        com.CommandText = "Insert INTO Enrollemnts (StartDate, Semester, IdStudy) Values (@date,1,@idstudy)";
+                        com.Parameters.AddWithValue("date",DateTime.Now);
+                        com.CommandText = "Select IdEnrollment FROM Enrollments";
+                        dr = com.ExecuteReader();
+
+                    }
                     //...
                     com.ExecuteNonQuery();
 
@@ -73,6 +80,11 @@ namespace Wyklad5.Services
                 }
             }
 
+        }
+
+        public void PromoteStudents(PromoteStudentRequest promRequest)
+        {
+           
         }
 
         public void PromoteStudents(int semester, string studies)

@@ -8,6 +8,8 @@ namespace cw3.DTOs.Requests
 {
     public class EnrollStudentRequest
     {
+        public string Semester { get; set; }
+
         //[RegularExpression("^s[0-9]+$")]
         public string IndexNumber { get; set; }
 
@@ -20,7 +22,7 @@ namespace cw3.DTOs.Requests
         [Required]
         [MaxLength(255)]
         public string LastName { get; set; }
-        public DateTime Birthdate { get; set; }
+        public string Birthdate { get; set; }
 
         [Required]
         public string Studies { get; set; }
